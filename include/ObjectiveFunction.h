@@ -25,7 +25,6 @@ class ObjectiveFunction
 {
 
 private:
-    static constexpr ushort selector_modulo = 10;
 
     static double rastiginFunction(double, double);
     static double ackleyFunction(double x, double y);
