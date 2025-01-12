@@ -1,9 +1,13 @@
 #include "../include/ObjectiveFunction.h"
 #include <iostream>
 
+#include "../include/EvolutionaryAlgorithm.h"
+#include "../include/utils.h"
+
 int main()
 {
-    std::cout << ObjectiveFunction::objectiveFunction(6.6, 54);
+    EvolutionaryAlgorithm ea(1000, 10, ObjectiveFunctions::ALL);
+    ea.run();
 
     return 0;
 }

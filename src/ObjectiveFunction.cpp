@@ -3,244 +3,142 @@
 #include <cfloat>
 #include <functional>
 #include <iostream>
+#include <limits>
 
-double ObjectiveFunction::sphereFunction(double x)
+double ObjectiveFunction::rastiginFunction(const double x1, const double x2)
 {
-    return x * x;
+    constexpr double A = 10.0;
+
+    double result = A * 2;
+
+    result += x1 * x1 - A * std::cos(2 * M_PI * x1);
+    result += x2 * x2 - A * std::cos(2 * M_PI * x2);
+
+    return result;
 }
 
-double ObjectiveFunction::rastriginFunction(double x)
+double ObjectiveFunction::ackleyFunction(const double x, const double y)
 {
-    return 10 + (x * x - 10 * std::cos(2 * M_PI * x));
+    constexpr double A = -20.0;
+
+    const double term1 = std::exp(-0.2 * std::sqrt(0.5 * (x * x + y * y)));
+    const double term2 = std::exp(0.5 * (std::cos(2 * M_PI * x) + std::cos(2 * M_PI * y)));
+
+    return A * term1 * term2 + std::exp(1.0) + 20.0;
 }
 
-double ObjectiveFunction::ackleyFunction(double x)
+double ObjectiveFunction::sphereFunction(const double x, const double y)
 {
-    return -20 * std::exp(-0.2 * std::sqrt(0.5 * (x * x))) - std::exp(0.5 * (std::cos(2 * M_PI * x))) + 20 + M_E;
+    return x*x + y*y;
 }
 
-double ObjectiveFunction::griewankFunction(double x)
+double ObjectiveFunction::rosenbrockFunction(const double x, const double y)
 {
-    return 1 + (x * x) / 4000 - std::cos(x / std::sqrt(1));
+    return 100.0 * pow((y - pow(x, 2)), 2) + pow(1 - x, 2);
 }
 
-double ObjectiveFunction::styblinskiTangFunction(double x)
+double ObjectiveFunction::boothFunction(const double x, const double y)
 {
-    return 0.5 * (x * x * x * x - 16 * x * x + 5 * x);
+    const double term1 = std::pow(x + 2 * y - 7, 2);
+    const double term2 = std::pow(2 * x + y - 5, 2);
+    return term1 + term2;
 }
 
-double ObjectiveFunction::rosenbrockFunction(double x1, double x2)
+double ObjectiveFunction::matyasFunction(const double x, const double y)
 {
-    return 100 * std::pow((x2 - x1 * x1), 2) + std::pow((1 - x1), 2);
+    return 0.26 * (x * x + y * y) - 0.48 * x * y;
 }
 
-double ObjectiveFunction::bealeFunction(double x1, double x2)
+double ObjectiveFunction::leviFunction(const double x, const double y)
 {
-    return std::pow((1.5 - x1 + x1 * x2), 2) + std::pow((2.25 - x1 + x1 * x2 * x2), 2) + std::pow((2.625 - x1 + x1 * x2 * x2 * x2), 2);
+    return std::pow(std::sin(3 * M_PI * x), 2) +
+         std::pow(x - 1, 2) * (1 + std::pow(std::sin(3 * M_PI * y), 2)) +
+         std::pow(y - 1, 2) * (1 + std::pow(std::sin(2 * M_PI * y), 2));
 }
 
-double ObjectiveFunction::goldsteinPriceFunction(double x1, double x2)
-{
-    return (1 + std::pow((x1 + x2 + 1), 2) * (19 - 14 * x1 + 3 * x1 * x1 - 14 * x2 + 6 * x1 * x2 + 3 * x2 * x2)) *
-           (30 + std::pow((2 * x1 - 3 * x2), 2) * (18 - 32 * x1 + 12 * x1 * x1 + 48 * x2 - 36 * x1 * x2 + 27 * x2 * x2));
+double ObjectiveFunction::griewankFunction(const double x, const double y) {
+
+    double sum_squares = x * x + y * y;
+    double product_cosines = std::cos(x) * std::cos(y / std::sqrt(2));
+
+    return 1 + sum_squares / 4000 - product_cosines;
 }
 
-double ObjectiveFunction::boothFunction(double x1, double x2)
+double ObjectiveFunction::himmelblauFunction(const double x, const double y)
 {
-    return std::pow((x1 + 2 * x2 - 7), 2) + std::pow((2 * x1 + x2 - 5), 2);
+    double term1 = std::pow(x * x + y - 11, 2);
+    double term2 = std::pow(x + y * y - 7, 2);
+
+    return term1 + term2;
 }
 
-double ObjectiveFunction::bukinN6Function(double x1, double x2)
+double ObjectiveFunction::threeHumpCamelFunction(const double x, const double y)
 {
-    return 100 * std::sqrt(std::abs(x2 - 0.01 * x1 * x1)) + 0.01 * std::abs(x1 + 10);
+    return 2 * x * x - 1.05 * std::pow(x, 4) + std::pow(x, 6) / 6 + x * y + y * y;
 }
 
-double ObjectiveFunction::matyasFunction(double x1, double x2)
+std::function<double(double, double)> ObjectiveFunction::selectorFunction(const double x1, const double x2, ObjectiveFunctions objective_function)
 {
-    return 0.26 * (x1 * x1 + x2 * x2) - 0.48 * x1 * x2;
-}
+    int param = static_cast<int>(x1 * x2);
+    ObjectiveFunctions selector = objective_function;
 
-double ObjectiveFunction::leviN13Function(double x1, double x2)
-{
-    return std::pow((std::sin(3 * M_PI * x1)), 2) + std::pow((x1 - 1), 2) * (1 + std::pow((std::sin(3 * M_PI * x2)), 2)) + std::pow((x2 - 1), 2) * (1 + std::pow((std::sin(2 * M_PI * x2)), 2));
-}
-
-double ObjectiveFunction::himmelblauFunction(double x1, double x2)
-{
-    return std::pow((x1 * x1 + x2 - 11), 2) + std::pow((x1 + x2 * x2 - 7), 2);
-}
-
-double ObjectiveFunction::threeHumpCamelFunction(double x1, double x2)
-{
-    return 2 * x1 * x1 - 1.05 * std::pow(x1, 4) + std::pow(x1, 6) / 6 + x1 * x2 + x2 * x2;
-}
-
-double ObjectiveFunction::easomFunction(double x1, double x2)
-{
-    return -std::cos(x1) * std::cos(x2) * std::exp(-std::pow((x1 - M_PI), 2) - std::pow((x2 - M_PI), 2));
-}
-
-double ObjectiveFunction::crossInTrayFunction(double x1, double x2)
-{
-    return -0.0001 * std::pow((std::abs(std::sin(x1) * std::sin(x2) * std::exp(std::abs(100 - std::sqrt(x1 * x1 + x2 * x2) / M_PI))) + 1), 0.1);
-}
-
-double ObjectiveFunction::eggholderFunction(double x1, double x2)
-{
-    return -(x2 + 47) * std::sin(std::sqrt(std::abs(x2 + x1 / 2 + 47))) - x1 * std::sin(std::sqrt(std::abs(x1 - (x2 + 47))));
-}
-
-double ObjectiveFunction::holderTableFunction(double x1, double x2)
-{
-    return -std::abs(std::sin(x1) * std::cos(x2) * std::exp(std::abs(1 - std::sqrt(x1 * x1 + x2 * x2) / M_PI)));
-}
-
-double ObjectiveFunction::mccormickFunction(double x1, double x2)
-{
-    return std::sin(x1 + x2) + std::pow((x1 - x2), 2) - 1.5 * x1 + 2.5 * x2 + 1;
-}
-
-double ObjectiveFunction::schafferFunction_n2(double x1, double x2)
-{
-    return 0.5 + (std::pow(std::sin(x1 * x1 - x2 * x2), 2) - 0.5) / std::pow((1 + 0.001 * (x1 * x1 + x2 * x2)), 2);
-}
-
-double ObjectiveFunction::schafferFunction_n4(double x1, double x2)
-{
-    return 0.5 + (std::pow(std::cos(std::sin(std::abs(x1 * x1 - x2 * x2))), 2) - 0.5) / std::pow((1 + 0.001 * (x1 * x1 + x2 * x2)), 2);
-}
-
-double ObjectiveFunction::chankongHaimesFunction(double x1, double x2)
-{
-    return 2 + (x1 - 2) * (x1 - 2) + (x2 - 1) * (x2 - 1);
-}
-
-double ObjectiveFunction::fonsecaFlemingFunction(double x1, double x2)
-{
-    return 1 - std::exp(-std::pow((x1 - 1 / std::sqrt(2)), 2) - std::pow((x2 - 1 / std::sqrt(2)), 2));
-}
-
-double ObjectiveFunction::test4Function(double x1, double x2)
-{
-    return std::pow((x1 - 2), 2) + std::pow((x2 - 2), 2);
-}
-
-double ObjectiveFunction::kursaweFunction(double x1, double x2)
-{
-    return -10 * std::exp(-0.2 * std::sqrt(x1 * x1 + x2 * x2));
-}
-
-double ObjectiveFunction::osyczkaKunduFunction(double x1, double x2)
-{
-    return -25 * (x1 - 2) * (x1 - 2) + (x2 - 1) * (x2 - 1);
-}
-
-double ObjectiveFunction::ctp1Function(double x1, double x2)
-{
-    return x1 + x2;
-}
-
-double ObjectiveFunction::constrExProblem(double x1, double x2)
-{
-    return x1 + x2;
-}
-
-double ObjectiveFunction::viennetFunction(double x1, double x2)
-{
-    return 0.5 * (x1 * x1 + x2 * x2) + std::sin(x1 * x1 + x2 * x2);
-}
-
-std::function<double(double, double)> ObjectiveFunction::selectorFunction(const double x1, const double x2)
-{
-    switch (const int selector = static_cast<int>(sphereFunction(x1) * rastriginFunction(x2)) % selector_modulo)
+    if (objective_function == ObjectiveFunctions::ALL)
     {
-    case 0:
-        std::cout << "Rosenbrock Function" << std::endl;
-        return rosenbrockFunction;
-    case 1:
-        std::cout << "Beale Function" << std::endl;
-        return bealeFunction;
-    case 2:
-        std::cout << "Goldstein-Price Function" << std::endl;
-        return goldsteinPriceFunction;
-    case 3:
-        std::cout << "Booth Function" << std::endl;
-        return boothFunction;
-    case 4:
-        std::cout << "Bukin N6 Function" << std::endl;
-        return bukinN6Function;
-    case 5:
-        std::cout << "Matyas Function" << std::endl;
-        return matyasFunction;
-    case 6:
-        std::cout << "Levi N13 Function" << std::endl;
-        return leviN13Function;
-    case 7:
-        std::cout << "Himmelblau Function" << std::endl;
-        return himmelblauFunction;
-    case 8:
-        std::cout << "Three-Hump Camel Function" << std::endl;
-        return threeHumpCamelFunction;
-    case 9:
-        std::cout << "Easom Function" << std::endl;
-        return easomFunction;
-    case 10:
-        std::cout << "Cross-in-Tray Function" << std::endl;
-        return crossInTrayFunction;
-    case 11:
-        std::cout << "Eggholder Function" << std::endl;
-        return eggholderFunction;
-    case 12:
-        std::cout << "Holder Table Function" << std::endl;
-        return holderTableFunction;
-    case 13:
-        std::cout << "McCormick Function" << std::endl;
-        return mccormickFunction;
-    case 14:
-        std::cout << "Schaffer Function N2" << std::endl;
-        return schafferFunction_n2;
-    case 15:
-        std::cout << "Schaffer Function N4" << std::endl;
-        return schafferFunction_n4;
-    case 16:
-        std::cout << "Chankong-Haimes Function" << std::endl;
-        return chankongHaimesFunction;
-    case 17:
-        std::cout << "Fonseca-Fleming Function" << std::endl;
-        return fonsecaFlemingFunction;
-    case 18:
-        std::cout << "Test4 Function" << std::endl;
-        return test4Function;
-    case 19:
-        std::cout << "Kursawe Function" << std::endl;
-        return kursaweFunction;
-    case 20:
-        std::cout << "Osyczka-Kundu Function" << std::endl;
-        return osyczkaKunduFunction;
-    case 21:
-        std::cout << "CTP1 Function" << std::endl;
-        return ctp1Function;
-    case 22:
-        std::cout << "Constr-Ex Problem" << std::endl;
-        return constrExProblem;
-    case 23:
-        std::cout << "Viennet Function" << std::endl;
-        return viennetFunction;
+        selector = static_cast<ObjectiveFunctions>(abs(param) % static_cast<int>(ObjectiveFunctions::ALL));
+    }
+
+    switch (selector)
+    {
+    case ObjectiveFunctions::RASTIGIN:
+        // std::cout << "rastiginFunction" << std::endl;
+            return rastiginFunction;
+    case ObjectiveFunctions::ACKLEY:
+        // std::cout << "ackleyFunction" << std::endl;
+            return ackleyFunction;
+    case ObjectiveFunctions::SPHERE:
+        // std::cout << "sphereFunction" << std::endl;
+            return sphereFunction;
+    case ObjectiveFunctions::ROSENBROCK:
+        // std::cout << "rosenbrockFunction" << std::endl;
+            return rosenbrockFunction;
+    case ObjectiveFunctions::BOOTH:
+        // std::cout << "boothFunction" << std::endl;
+            return boothFunction;
+    case ObjectiveFunctions::MATYAS:
+        // std::cout << "matyasFunction" << std::endl;
+            return matyasFunction;
+    case ObjectiveFunctions::LEVI:
+        // std::cout << "leviFunction" << std::endl;
+            return leviFunction;
+    case ObjectiveFunctions::GRIEWANK:
+        // std::cout << "griewankFunction" << std::endl;
+            return griewankFunction;
+    case ObjectiveFunctions::HIMMELBLAU:
+        // std::cout << "himmelblauFunction" << std::endl;
+            return himmelblauFunction;
+    case ObjectiveFunctions::THREE_HUMP_CAMEL:
+        // std::cout << "threeHumpCamelFunction" << std::endl;
+            return threeHumpCamelFunction;
     default:
         throw std::invalid_argument("Invalid function selector. Check the selector_modulo value.");
     }
 }
 
-double ObjectiveFunction::objectiveFunction(const double x1, const double x2)
+double ObjectiveFunction::objectiveFunction(const double x1, const double x2, ObjectiveFunctions objective_function_number)
 {
-    const auto function = selectorFunction(x1, x2);
+    if(x1 < M_MIN_BOUND || x1 > M_MAX_BOUND || x2 < M_MIN_BOUND || x2 > M_MAX_BOUND) {
+        // std::cout << "Out of bound parameters. Returning DBL_MAX." << std::endl;
+        return std::numeric_limits<double>::max();
+    }
+
+    const auto function = selectorFunction(x1, x2, objective_function_number);
     try
     {
         return function(x1, x2);
     }
     catch (...)
     {
-        std::cout << "Function returned undefined value. Using DBL_MAX instead." << std::endl;
+        // std::cout << "Function returned undefined value. Using DBL_MAX instead." << std::endl;
         return DBL_MAX;
     }
 }
