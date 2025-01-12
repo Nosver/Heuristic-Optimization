@@ -1,5 +1,6 @@
 #include "../include/utils.h"
 
+// TC: O(1), SC: O(1)
 int utils::getRandomInt(int min_val, int max_val)
 {
     const int randomInt = u_dis(gen);
@@ -8,6 +9,7 @@ int utils::getRandomInt(int min_val, int max_val)
     return min_val + (randomInt % range);
 }
 
+// TC: O(1), SC: O(1)
 double utils::getRandomDouble(const double min_val, const double max_val)
 {
     const int randomInt = u_dis(gen);
@@ -16,6 +18,7 @@ double utils::getRandomDouble(const double min_val, const double max_val)
     return randomDouble;
 }
 
+// TC: O(1), SC: O(1)
 double utils::deviateDecisionVariableWithNormalDistribution(const double mean, const double min_val, const double max_val)
 {
     const double stddev = (max_val - min_val) / 4;

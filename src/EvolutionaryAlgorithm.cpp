@@ -6,16 +6,19 @@
 #include "../include/ObjectiveFunction.h"
 #include "../include/utils.h"
 
+// TC: O(1), SC: O(1)
 void Individual::printIndividual() const
 {
     std::cout << this << "\t x: " << x << "\t y: " << y << "\t fitness: " << fitness << std::endl;
 }
 
+// TC: O(1), SC: O(1)
 void Individual::calculateFitness(const ObjectiveFunctions objective_function_selector)
 {
     this->fitness = ObjectiveFunction::objectiveFunction(x, y, objective_function_selector);
 }
 
+// TC: O(1), SC: O(1)
 Individual Individual::getDeviatedIndividual() const
 {
     Individual child(this);
@@ -49,6 +52,7 @@ Individual Individual::getDeviatedIndividual() const
     return child;
 }
 
+// TC: O(1), SC: O(1)
 void Individual::setIndividualFrom(const Individual& other)
 {
     this->x = other.x;
@@ -56,6 +60,7 @@ void Individual::setIndividualFrom(const Individual& other)
     this->fitness = other.fitness;
 }
 
+// TC: O(1), SC: O(1)
 Individual::Individual(const Individual *other)
 {
     this->x = other->x;
@@ -63,6 +68,7 @@ Individual::Individual(const Individual *other)
     this->fitness = other->fitness;
 }
 
+// TC: O(1), SC: O(1)
 Individual::Individual(const double x, const double y)
 {
     this->x = x;
@@ -70,6 +76,7 @@ Individual::Individual(const double x, const double y)
     this->fitness = DBL_MAX;
 }
 
+// TC: O(1), SC: O(1)
 Individual::Individual(double x, double y, double fitness)
 {
     this->x = x;
@@ -77,16 +84,19 @@ Individual::Individual(double x, double y, double fitness)
     this->fitness = fitness;
 }
 
+// TC: O(1), SC: O(1)
 bool Individual::operator<(const Individual& other) const
 {
     return this->fitness < other.fitness;
 }
 
+// TC: O(1), SC: O(1)
 bool Individual::operator>(const Individual& other) const
 {
     return this->fitness > other.fitness;
 }
 
+// TC: O(population_size), SC: O(1)
 void EvolutionaryAlgorithm::variation()
 {
     for (int i=0; i < population_size; i++)
@@ -97,6 +107,7 @@ void EvolutionaryAlgorithm::variation()
     }
 }
 
+// TC: O(population_size), SC: O(1)
 void EvolutionaryAlgorithm::fitnessEvaluation()
 {
     for (int i=0; i < population_size * 2; i++)
@@ -105,6 +116,7 @@ void EvolutionaryAlgorithm::fitnessEvaluation()
     }
 }
 
+// TC: O(population_size * log(population_size)), SC: O(1)
 void EvolutionaryAlgorithm::sortPopulation()
 {
     std::sort(population.begin(), population.end(), [](const Individual* a, const Individual* b) {
@@ -112,6 +124,7 @@ void EvolutionaryAlgorithm::sortPopulation()
     });
 }
 
+// TC: O(1), SC: O(1)
 void EvolutionaryAlgorithm::generationalCalculation()
 {
     // Check same best individual counter
@@ -127,6 +140,7 @@ void EvolutionaryAlgorithm::generationalCalculation()
     previous_best_individual = population[0]->fitness;
 }
 
+// TC: O(1), SC: O(1)
 void EvolutionaryAlgorithm::printGeneration() const
 {
     std::cout << "Generation: " << generation_counter << std::endl;
@@ -136,6 +150,7 @@ void EvolutionaryAlgorithm::printGeneration() const
     std::cout << "\n";
 }
 
+// TC: O(population_size), SC: O(1)
 void EvolutionaryAlgorithm::printPopulation() const
 {
     std::cout << "Generation: " << generation_counter << std::endl;
@@ -147,6 +162,7 @@ void EvolutionaryAlgorithm::printPopulation() const
     std::cout << "\n\n";
 }
 
+// TC: O(population_size), SC: O(population_size)
 EvolutionaryAlgorithm::EvolutionaryAlgorithm(const int generation_limit, const int termination_limit, const ObjectiveFunctions objective_function_selector)
 {
     this->generation_limit = generation_limit;
@@ -162,6 +178,7 @@ EvolutionaryAlgorithm::EvolutionaryAlgorithm(const int generation_limit, const i
     }
 }
 
+// TC: O(generation_limit * (population_size * log(population_size)), SC: O(1)
 void EvolutionaryAlgorithm::run()
 {
     for (int i=0; i < generation_limit ; i++)
@@ -181,6 +198,7 @@ void EvolutionaryAlgorithm::run()
     }
 }
 
+// TC: O(population_size), SC: O(-n)
 EvolutionaryAlgorithm::~EvolutionaryAlgorithm()
 {
     for (int i=0; i < population_size * 2; i++)

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::rastiginFunction(const double x1, const double x2)
 {
     constexpr double A = 10.0;
@@ -17,6 +18,7 @@ double ObjectiveFunction::rastiginFunction(const double x1, const double x2)
     return result;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::ackleyFunction(const double x, const double y)
 {
     constexpr double A = -20.0;
@@ -27,16 +29,19 @@ double ObjectiveFunction::ackleyFunction(const double x, const double y)
     return A * term1 * term2 + std::exp(1.0) + 20.0;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::sphereFunction(const double x, const double y)
 {
     return x*x + y*y;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::rosenbrockFunction(const double x, const double y)
 {
     return 100.0 * pow((y - pow(x, 2)), 2) + pow(1 - x, 2);
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::boothFunction(const double x, const double y)
 {
     const double term1 = std::pow(x + 2 * y - 7, 2);
@@ -44,11 +49,13 @@ double ObjectiveFunction::boothFunction(const double x, const double y)
     return term1 + term2;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::matyasFunction(const double x, const double y)
 {
     return 0.26 * (x * x + y * y) - 0.48 * x * y;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::leviFunction(const double x, const double y)
 {
     return std::pow(std::sin(3 * M_PI * x), 2) +
@@ -56,30 +63,34 @@ double ObjectiveFunction::leviFunction(const double x, const double y)
          std::pow(y - 1, 2) * (1 + std::pow(std::sin(2 * M_PI * y), 2));
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::griewankFunction(const double x, const double y) {
 
-    double sum_squares = x * x + y * y;
-    double product_cosines = std::cos(x) * std::cos(y / std::sqrt(2));
+    const double sum_squares = x * x + y * y;
+    const double product_cosines = std::cos(x) * std::cos(y / std::sqrt(2));
 
     return 1 + sum_squares / 4000 - product_cosines;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::himmelblauFunction(const double x, const double y)
 {
-    double term1 = std::pow(x * x + y - 11, 2);
-    double term2 = std::pow(x + y * y - 7, 2);
+    const double term1 = std::pow(x * x + y - 11, 2);
+    const double term2 = std::pow(x + y * y - 7, 2);
 
     return term1 + term2;
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::threeHumpCamelFunction(const double x, const double y)
 {
     return 2 * x * x - 1.05 * std::pow(x, 4) + std::pow(x, 6) / 6 + x * y + y * y;
 }
 
+// TC: O(1), SC: O(1)
 std::function<double(double, double)> ObjectiveFunction::selectorFunction(const double x1, const double x2, ObjectiveFunctions objective_function)
 {
-    int param = static_cast<int>(x1 * x2);
+    const int param = static_cast<int>(x1 * x2);
     ObjectiveFunctions selector = objective_function;
 
     if (objective_function == ObjectiveFunctions::ALL)
@@ -124,6 +135,7 @@ std::function<double(double, double)> ObjectiveFunction::selectorFunction(const 
     }
 }
 
+// TC: O(1), SC: O(1)
 double ObjectiveFunction::objectiveFunction(const double x1, const double x2, ObjectiveFunctions objective_function_number)
 {
     if(x1 < M_MIN_BOUND || x1 > M_MAX_BOUND || x2 < M_MIN_BOUND || x2 > M_MAX_BOUND) {
